@@ -1,0 +1,90 @@
+#----------------------------------------------------------
+# Env Variables
+#----------------------------------------------------------
+
+#hostname
+#----------------------------------------------------------
+export NODE1_HOSTNAME=NODE1_NAME
+export NODE2_HOSTNAME=NODE2_NAME
+
+#dbname,RU
+#----------------------------------------------------------
+export DB_NAME=DB_NAME_STR
+export GI_RU=GI_RU_STR
+export GI_MRP=GI_MRP_STR
+export DB_DPBP=DB_DPBP_STR
+#----------------------------------------------------------
+
+#password
+#----------------------------------------------------------
+export SYS_PASSWORD=Welcome1_
+export PDB_PASSWORD=Welcome1_
+export GRID_PASSWORD=oracle
+export ORACLE_PASSWORD=oracle
+export ROOT_PASSWORD=oracle
+#----------------------------------------------------------
+
+#storage
+#----------------------------------------------------------
+export OCR_REDUNDANCY=EXTERNAL
+export OCR_DISK=/dev/asm*ocr*
+export DATA_DISK=/dev/asm*data*
+export ARCH_DISK=/dev/asm*arch*
+export DISKDISCOVERYSTRING=/dev/asm*
+#----------------------------------------------------------
+
+
+
+#network
+#----------------------------------------------------------
+export NET_DEVICE1=enp0s3
+export NET_DEVICE2=enp0s8
+
+export PUBLIC_SUBNET=192.168.56.0
+export PRIVATE_SUBNET=192.168.0.0
+#public IP
+export NODE1_PUBLIC_IP=NODE1_IP
+export NODE2_PUBLIC_IP=NODE2_IP
+#private IP
+export NODE1_PRIV_IP=192.168.0.101
+export NODE2_PRIV_IP=192.168.0.102
+#VIP
+export NODE1_VIP_IP=NODE_VIP1
+export NODE2_VIP_IP=NODE_VIP2
+# SCAN IP
+export SCAN_IP1=RAC_SCAN_IP
+
+#----------------------------------------------------------
+export NODE1_VIPNAME=${NODE1_HOSTNAME}-vip
+export NODE2_VIPNAME=${NODE2_HOSTNAME}-vip
+
+export NODE1_PRIVNAME=${NODE1_HOSTNAME}-priv
+export NODE2_PRIVNAME=${NODE2_HOSTNAME}-priv
+#----------------------------------------------------------
+#----------------------------------------------------------
+export CLUSTER_NAME=rac-cluster
+
+export ORA_LANGUAGES=en,en_GB
+
+export SCAN_NAME=rac-scan
+export SCAN_PORT=1521
+
+export ORA_INVENTORY=/u01/app/oraInventory
+export GRID_BASE=/u01/app/grid
+export DB_BASE=/u01/app/oracle
+
+export GI_HOME=/u01/app/19.0.0/grid
+export DB_HOME=/u01/app/oracle/product/19.0.0/dbhome_1
+
+export PDB_NAME=PDB1
+export DB_TYPE=RAC
+export OCR_NAME=OCR
+export DATA_NAME=DATA
+export ARCH_NAME=ARCH
+#----------------------------------------------------------
+#----------------------------------------------------------
+export INFO='\033[0;34mINFO: \033[0m'
+export ERROR='\033[1;31mERROR: \033[0m'
+export SUCCESS='\033[1;32mSUCCESS: \033[0m'
+#----------------------------------------------------------
+#----------------------------------------------------------

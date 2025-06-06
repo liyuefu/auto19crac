@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# 将 VM_BIN 添加到系统 PATH 中
+export PATH="VM_BIN:$PATH"
+
+# 定义变量
+var_nodename1="NODE1_NAME"
+var_nodename2="NODE2_NAME"
+var_groupname="GROUP_NAME"
+var_vmdata="VM_DATA"
+var_iso="ISO_FILE"
+
+mkdir -p $var_vmdata/$var_groupname/$var_nodename1
+mkdir -p $var_vmdata/$var_groupname/$var_nodename2
+# 创建第一个虚拟机
+VBoxManage createvm --name "$var_nodename1" --groups "/$var_groupname" --ostype RedHat_64 --register --default
+VBoxManage modifyvm "$var_nodename1" --memory 8192
+VBoxManage createhd --size 102400 --format VDI --filename "$var_vmdata/$var_groupname/$var_nodename1/$var_nodename1.vdi"
+VBoxManage storageattach "$var_nodename1" --storagectl "SATA" --port 0 --device 0 --type hdd --medium "$var_vmdata/$var_groupname/$var_nodename1/$var_nodename1.vdi"
+VBoxManage storageattach "$var_nodename1" --storagectl "IDE" --port 0 --device 0 --type dvddrive --medium "$var_iso"
+VBoxManage setextradata "$var_nodename1" "VBoxInternal/Devices/VMMDev/0/Config/GetHostTimeDisabled" "1"
+VBoxManage unattended install "$var_nodename1" --iso "$var_iso" --package-selection-adjustment "minimal" --script-template="redhat1.ini" --time-zone="Australia/Sydney" --user="vboxuser" --user-password="Welcome1"
+VBoxManage modifyvm "$var_nodename1" --nic1 hostonly --hostonlyadapter1 vboxnet0
+VBoxManage modifyvm "$var_nodename1" --nic2 intnet
+
+# 创建第二个虚拟机
+VBoxManage createvm --name "$var_nodename2" --groups "/$var_groupname" --ostype RedHat_64 --register --default
+VBoxManage modifyvm "$var_nodename2" --memory 8192
+VBoxManage createhd --size 102400 --format VDI --filename "$var_vmdata/$var_groupname/$var_nodename2/$var_nodename2.vdi"
+VBoxManage storageattach "$var_nodename2" --storagectl "SATA" --port 0 --device 0 --type hdd --medium "$var_vmdata/$var_groupname/$var_nodename2/$var_nodename2.vdi"
+VBoxManage storageattach "$var_nodename2" --storagectl "IDE" --port 0 --device 0 --type dvddrive --medium "$var_iso"
+VBoxManage setextradata "$var_nodename2" "VBoxInternal/Devices/VMMDev/0/Config/GetHostTimeDisabled" "1"
+VBoxManage unattended install "$var_nodename2" --iso "$var_iso" --package-selection-adjustment "minimal" --script-template="redhat2.ini" --time-zone="Australia/Sydney" --user="vboxuser" --user-password="Welcome1"
+
+VBoxManage modifyvm "$var_nodename2" --nic1 hostonly --hostonlyadapter1 vboxnet0
+VBoxManage modifyvm "$var_nodename2" --nic2 intnet
+
+# 创建共享磁盘
+VBoxManage createmedium disk --filename "$var_vmdata/$var_groupname/${var_groupname}_19c-rac-ocr.vdi" --size 2048 --format VDI --variant Fixed
+VBoxManage createmedium disk --filename "$var_vmdata/$var_groupname/${var_groupname}_19c-rac-data01.vdi" --size 10240 --format VDI --variant Fixed
+VBoxManage createmedium disk --filename "$var_vmdata/$var_groupname/${var_groupname}_19c-rac-data02.vdi" --size 10240 --format VDI --variant Fixed
+
+# 启动虚拟机
+VBoxManage startvm "$var_nodename1"
+VBoxManage startvm "$var_nodename2"
+

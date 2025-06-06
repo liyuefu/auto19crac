@@ -1,0 +1,62 @@
+#######################################
+#version=DEVEL
+# System authorization information
+auth --enableshadow --passalgo=sha512
+# Use CDROM installation media
+cdrom
+# Use graphical install
+graphical
+# Run the Setup Agent on first boot
+firstboot --enable
+ignoredisk --only-use=sda
+# Keyboard layouts
+keyboard --vckeymap=us --xlayouts='us'
+# System language
+lang en_US.UTF-8
+
+# Network information
+network  --hostname=NODE1_NAME
+network --bootproto=static --device=enp0s3 --onboot=on --ip=NODE1_IP --netmask=255.255.255.0 --gateway=192.168.56.1 
+network --bootproto=static --device=enp0s8 --onboot=on --ip=192.168.0.101 --netmask=255.255.255.0 --gateway=192.168.0.1 
+
+repo --name="Server-HighAvailability" --baseurl=file:///run/install/repo/addons/HighAvailability
+repo --name="Server-ResilientStorage" --baseurl=file:///run/install/repo/addons/ResilientStorage
+# Root password
+rootpw --iscrypted $6$dtk34yiqNHlQFao5$6aD65o0ZbSTww86YXxLXof3.4zl79IG.dWkpsNGlyrbjsU2gyEUpnx8HbbECKpZ3Q8CMTG78MCZ/MmClJDMzz/
+# System services
+#services --enabled="chronyd"
+# System timezone
+timezone Asia/Shanghai
+# System bootloader configuration
+bootloader --append=" crashkernel=auto" --location=mbr --boot-drive=sda
+# Partition clearing information
+clearpart --none --initlabel
+# Disk partitioning information
+part pv.265 --fstype="lvmpv" --ondisk=sda --size=92160
+part /boot --fstype="xfs" --ondisk=sda --size=1024
+volgroup rhel --pesize=4096 pv.265
+logvol swap  --fstype="swap" --size=8192 --name=swap --vgname=rhel
+logvol /  --fstype="xfs" --grow --maxsize=92160 --size=1024 --name=root --vgname=rhel
+
+%packages
+@^infrastructure-server-environment
+@base
+@core
+@development
+chrony
+kexec-tools
+dos2unix
+
+%end
+
+%addon com_redhat_kdump --enable --reserve-mb='auto'
+
+%end
+
+%anaconda
+pwpolicy root --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+pwpolicy user --minlen=6 --minquality=1 --notstrict --nochanges --emptyok
+pwpolicy luks --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+%end
+shutdown
+#reboot
